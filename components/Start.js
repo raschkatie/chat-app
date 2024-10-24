@@ -3,7 +3,9 @@ import { useState } from 'react';
 
 const Start = ({ navigation }) => {
     const [name, setName] = useState('');
-    const [backgroundColor, setBackgroundColor] = useState('');
+    const [background, setBackground] = useState('');
+
+    const colors = ['#090c08', '#474056', '#8a95a5', '#b9c6ae'];
 
     return (
         <View style={styles.container}>
@@ -21,10 +23,27 @@ const Start = ({ navigation }) => {
                             placeholder='Your Name'
                         />
 
+                        {/* Background Color Selection */}
+                        <Text style={styles.colorText}>Choose Background Color:</Text>
+                        <View style={styles.colorContainer}>
+                            {colors.map((color) => (
+                                <TouchableOpacity
+                                    key={color}
+                                    style={[
+                                        styles.colorButton,
+                                        {backgroundColor: color},
+                                        background === color && styles.selectedColor,
+                                    ]}
+                                    onPress={() => setBackground(color)}
+                                >
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+
                         {/* Start Button */}
                         <TouchableOpacity
                             style={styles.button}
-                            onPress={() => navigation.navigate('ChatScreen', { name: name })}
+                            onPress={() => navigation.navigate('ChatScreen', { name: name, background: background })}
                         >
                             <Text style={styles.buttonText}>Start Chatting</Text>
                         </TouchableOpacity>
@@ -66,7 +85,7 @@ const styles = StyleSheet.create({
         padding: 15,
         borderWidth: 1,
         marginTop: 15,
-        marginBottom: 15,
+        marginBottom: 30,
         borderRadius: 10,
         fontSize: 16,
         fontWeight: '300',
@@ -79,6 +98,23 @@ const styles = StyleSheet.create({
         fontWeight: '300',
         color: '#757083',
         opacity: 100
+    },
+    colorContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '80%',
+        alignItems: 'center',
+        marginTop: 10,
+        marginBottom: 30
+    },
+    colorButton: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+    },
+    selectedColor: {
+        borderWidth: 3,
+        borderColor: '#757083'
     },
     button: {
         backgroundColor: '#757083',
