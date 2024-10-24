@@ -17,10 +17,12 @@ const App = () => {
           name='StartScreen'
           component={Start}
         />
+        
         <Stack.Screen
           name='ChatScreen'
           component={Chat}
         />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
