@@ -12,7 +12,7 @@ const Start = ({ navigation }) => {
             <ImageBackground source={require('../assets/backgroundImage.png')} style={styles.image}>
                 <View style={styles.content}>
 
-                    <Text style={styles.header}>App Title</Text>
+                    <Text style={styles.header}>Chat App</Text>
 
                     {/* Name Input */}
                     <View style={styles.inputContainer}>

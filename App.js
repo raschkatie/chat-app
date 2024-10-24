@@ -9,10 +9,10 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName='StartScreen'
+        initialRouteName='Start'
       >
         <Stack.Screen
-          name='StartScreen'
+          name='Start'
           component={Start}
         />
 
