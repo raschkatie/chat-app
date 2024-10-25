@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, ImageBackground } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, ImageBackground, KeyboardAvoidingView, Platform } from 'react-native';
 import { useState } from 'react';
 
 const Start = ({ navigation }) => {
@@ -42,6 +42,10 @@ const Start = ({ navigation }) => {
 
                         {/* Start Button */}
                         <TouchableOpacity
+                            accessible={true}
+                            accessibilityLabel='Chat Button'
+                            accessibilityHint='Navigates to a chat room'
+                            accessibilityRole='button'
                             style={styles.button}
                             onPress={() => navigation.navigate('ChatScreen', { name: name, background: background })}
                         >
@@ -50,6 +54,8 @@ const Start = ({ navigation }) => {
                     </View>
                 </View>
             </ImageBackground>
+            { Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' /> : null}
+            { Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' /> : null}
         </View>
     );
 }
@@ -64,34 +70,36 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
         alignItems: 'center',
-        paddingBottom: '6%'
+        paddingBottom: '6%',
     },
     header: {
         fontSize: 45,
         fontWeight: '600',
         color: '#ffffff',
         margin: 25,
+        alignItems: 'flex-start',
+        flex: 1,
+        paddingTop: '5%',
     },
     inputContainer: {
         backgroundColor: '#ffffff',
         padding: 25,
         width: '88%',
-        height: '44%',
         borderRadius: 5,
     },
     textInput: {
         padding: 15,
         borderWidth: 1,
-        marginTop: 15,
-        marginBottom: 30,
+        marginTop: 10,
+        marginBottom: 40,
         borderRadius: 10,
         fontSize: 16,
         fontWeight: '300',
         color: '#757083',
         opacity: 50,
-        height: '20%'
+        height: 65
     },
     colorText: {
         fontSize: 16,
@@ -105,7 +113,8 @@ const styles = StyleSheet.create({
         width: '80%',
         alignItems: 'center',
         marginTop: 10,
-        marginBottom: 30
+        marginBottom: 40,
+        marginLeft: 5
     },
     colorButton: {
         width: 50,
@@ -122,7 +131,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        height: '20%'
+        height: 65
     },
     buttonText: {
         color: '#ffffff',
