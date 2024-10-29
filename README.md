@@ -14,3 +14,4 @@ The Chat App is a mobile application built using React Native. This app provides
 - React Native
 - Expo
 - Android Studio
+- Firestore/Firebase
