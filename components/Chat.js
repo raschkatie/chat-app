@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Bubble, GiftedChat, SystemMessage, Day } from 'react-native-gifted-chat';
-import { StyleSheet, View, Text, Platform, KeyboardAvoidingView } from 'react-native';
+import { collection, onSnapshot, orderBy, addDoc, query } from 'firebase/firestore';
+import { 
+    StyleSheet, View, Text, 
+    Platform, KeyboardAvoidingView 
+} from 'react-native';
 
-const Chat = ({ route, navigation }) => {
+const Chat = ({ route, navigation, db }) => {
     const [messages, setMessages] = useState([]);
-    const { name, background } = route.params;
+    const { name, background, userID } = route.params;
 
     const onSend = (newMessages) => {
-        setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages))
+        // setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages));
+        addDoc(collection(db, 'messages'), newMessages[0]);
     };
 
     const renderBubble = (props) => {
@@ -43,25 +48,23 @@ const Chat = ({ route, navigation }) => {
     }
 
     useEffect(() => {
-        setMessages([
-            {
-                _id: 1,
-                text: 'Hello developer',
-                createdAt: new Date(),
-                user: {
-                    _id: 2,
-                    name: 'React Native',
-                    avatar: 'https://placeimg.com/140/140/any'
-                },
-            },
-            {
-                _id: 3,
-                text: 'You have entered the chat',
-                createdAt: new Date(),
-                system: true,
-                // Any additional custom parameters are passed through
-            },
-        ]);
+        const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
+        const unsubChat = onSnapshot(q, (chatSnapshot) => {
+            let newMessageList = [];
+            chatSnapshot.forEach(message => {
+                let newMsg = {
+                    ...message.data(),
+                    createdAt: new Date(message.data().createdAt.toMillis())
+                };
+                newMessageList.push(newMsg);
+            });
+            setMessages(newMessageList);
+        });
+
+        // Clean up code
+        return () => {
+            if (unsubChat) unsubChat();
+        }
     }, []);
 
     useEffect(() => {
@@ -80,7 +83,8 @@ const Chat = ({ route, navigation }) => {
                     renderSystemMessage={renderSystemMessage}
                     onSend={messages => onSend(messages)}
                     user={{
-                        _id: 1
+                        _id: userID,
+                        name: name
                     }}
                 />
                 { Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' /> : null}
