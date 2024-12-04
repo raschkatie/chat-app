@@ -5,15 +5,25 @@ import {
     StyleSheet, View, Text, 
     Platform, KeyboardAvoidingView 
 } from 'react-native';
+import MapView from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomActions from './CustomActions';
 
 const Chat = ({ isConnected, route, navigation, db }) => {
     const [messages, setMessages] = useState([]);
     const { name, background, userID } = route.params;
 
     const onSend = (newMessages) => {
-        addDoc(collection(db, 'messages'), newMessages[0]);
-    };
+
+        // REMOVE WHEN DONE
+        console.log('TWO: New Message being added to Firestore: ', newMessages[0]);
+
+        addDoc(collection(db, 'messages'), newMessages[0])
+
+            // REMOVE WHEN DONE
+            .then(() => console.log('Message successfully added to Firestore'))
+            .catch((error) => console.error('ERROR adding message to Firestore: ', error));
+    }
 
     const renderBubble = (props) => {
         return (
@@ -52,6 +62,36 @@ const Chat = ({ isConnected, route, navigation, db }) => {
         else return null;
     }
 
+    const renderCustomActions = (props) => {
+        return <CustomActions onSend={onSend} {...props} />;
+    }
+
+    const renderCustomView = (props) => {
+        const { currentMessage } = props;
+
+        // REMOVE WHEN DONE
+        console.log('CustomView currentMessage: ', currentMessage);
+        if (currentMessage.location) {
+            return (
+                <MapView
+                    style={{
+                        width: 150,
+                        height: 100,
+                        borderRadius: 13,
+                        margin: 3
+                    }}
+                    region={{
+                        latitude: currentMessage.location.latitude,
+                        longitude: currentMessage.location.longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421
+                    }}
+                />
+            )
+        }
+        return null;
+    }
+
     const cacheMessages = async (messagesToCache) => {
         try {
             await AsyncStorage.setItem('messages', JSON.stringify(messagesToCache));
@@ -65,38 +105,48 @@ const Chat = ({ isConnected, route, navigation, db }) => {
         setMessages(JSON.parse(cachedMessages));
     }
 
-    let unsubChat;
+    let unsubMessages;
 
     useEffect(() => {
+
+        // REMOVE WHEN DONE
+        console.log('useEffect triggered. isConnected: ', isConnected);
+
+        navigation.setOptions({ title: name });
+
         if (isConnected === true) {
 
-            if (unsubChat) unsubChat();
-            unsubChat = null;
+            if (unsubMessages) unsubMessages();
+            unsubMessages = null;
 
             const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
-            unsubChat = onSnapshot(q, (chatSnapshot) => {
+            unsubMessages = onSnapshot(q, (doc) => {
                 let newMessageList = [];
-                chatSnapshot.forEach(message => {
+                doc.forEach(message => {
                     let newMsg = {
+                        id: message.id,
                         ...message.data(),
                         createdAt: new Date(message.data().createdAt.toMillis())
                     };
                     newMessageList.push(newMsg);
                 });
+
+                // REMOVE WHEN DONE
+                console.log('THREE: Messages retrieved from Firestore: ', newMessageList);
+
                 cacheMessages(newMessageList);
                 setMessages(newMessageList);
+
+                // REMOVE WHEN DONE
+                console.log('Messages state updated.');
             });
         } else loadCachedMessages();
 
         // Clean up code / unmounting actions
         return () => {
-            if (unsubChat) unsubChat();
+            if (unsubMessages) unsubMessages();
         }
-    }, []);
-
-    useEffect(() => {
-        navigation.setOptions({ title: name });
-    }, []);
+    }, [isConnected]);
 
     return (
         <View style={[
@@ -109,7 +159,15 @@ const Chat = ({ isConnected, route, navigation, db }) => {
                     renderBubble={renderBubble}
                     renderDay={renderDay}
                     renderSystemMessage={renderSystemMessage}
-                    onSend={messages => onSend(messages)}
+                    renderActions={renderCustomActions}
+                    renderCustomView={renderCustomView}
+                    onSend={(messages) => {
+
+                        // REMOVE WHEN DONE
+                        console.log('FOUR: Messages array passed to Gifted Chat: ', messages);
+
+                        onSend(messages);
+                    }}
                     user={{
                         _id: userID,
                         name: name

@@ -1,6 +1,6 @@
 
 import { LogBox, Alert } from 'react-native';
-LogBox.ignoreLogs(['@firebase/auth: Auth']);
+LogBox.ignoreLogs(['@firebase/auth: Auth', 'AsyncStorage has been extracted from']);
 
 // import Screens
 import Chat from './components/Chat';
