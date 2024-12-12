@@ -9,20 +9,12 @@ import MapView from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomActions from './CustomActions';
 
-const Chat = ({ isConnected, route, navigation, db }) => {
+const Chat = ({ isConnected, route, navigation, db, storage }) => {
     const [messages, setMessages] = useState([]);
     const { name, background, userID } = route.params;
 
     const onSend = (newMessages) => {
-
-        // REMOVE WHEN DONE
-        console.log('TWO: New Message being added to Firestore: ', newMessages[0]);
-
         addDoc(collection(db, 'messages'), newMessages[0])
-
-            // REMOVE WHEN DONE
-            .then(() => console.log('Message successfully added to Firestore'))
-            .catch((error) => console.error('ERROR adding message to Firestore: ', error));
     }
 
     const renderBubble = (props) => {
@@ -63,14 +55,11 @@ const Chat = ({ isConnected, route, navigation, db }) => {
     }
 
     const renderCustomActions = (props) => {
-        return <CustomActions onSend={onSend} {...props} />;
+        return <CustomActions storage={storage} userID={userID} {...props} />;
     }
 
     const renderCustomView = (props) => {
         const { currentMessage } = props;
-
-        // REMOVE WHEN DONE
-        console.log('CustomView currentMessage: ', currentMessage);
         if (currentMessage.location) {
             return (
                 <MapView
@@ -109,9 +98,6 @@ const Chat = ({ isConnected, route, navigation, db }) => {
 
     useEffect(() => {
 
-        // REMOVE WHEN DONE
-        console.log('useEffect triggered. isConnected: ', isConnected);
-
         navigation.setOptions({ title: name });
 
         if (isConnected === true) {
@@ -122,6 +108,7 @@ const Chat = ({ isConnected, route, navigation, db }) => {
             const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
             unsubMessages = onSnapshot(q, (doc) => {
                 let newMessageList = [];
+
                 doc.forEach(message => {
                     let newMsg = {
                         id: message.id,
@@ -130,15 +117,8 @@ const Chat = ({ isConnected, route, navigation, db }) => {
                     };
                     newMessageList.push(newMsg);
                 });
-
-                // REMOVE WHEN DONE
-                console.log('THREE: Messages retrieved from Firestore: ', newMessageList);
-
                 cacheMessages(newMessageList);
                 setMessages(newMessageList);
-
-                // REMOVE WHEN DONE
-                console.log('Messages state updated.');
             });
         } else loadCachedMessages();
 
@@ -161,13 +141,7 @@ const Chat = ({ isConnected, route, navigation, db }) => {
                     renderSystemMessage={renderSystemMessage}
                     renderActions={renderCustomActions}
                     renderCustomView={renderCustomView}
-                    onSend={(messages) => {
-
-                        // REMOVE WHEN DONE
-                        console.log('FOUR: Messages array passed to Gifted Chat: ', messages);
-
-                        onSend(messages);
-                    }}
+                    onSend={(messages) => onSend(messages)}
                     user={{
                         _id: userID,
                         name: name

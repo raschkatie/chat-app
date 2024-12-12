@@ -1,11 +1,13 @@
-import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
+import { TouchableOpacity, Text, View, StyleSheet, Alert } from "react-native";
 import { useActionSheet } from '@expo/react-native-action-sheet';
 
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { useState } from "react";
 
-const CustomActions = ({ wrapperStyle, iconTextStyle, onSend }) => {
+import { ref, uploadBytes } from "firebase/storage";
+
+const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID }) => {
     const [image, setImage] = useState(null);
 
     const actionSheet = useActionSheet();
@@ -34,14 +36,29 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend }) => {
         )
     }
 
+    const generateReference = (uri) => {
+        const timeStamp = (new Date()).getTime();
+        const imageName = uri.split("/")[uri.split("/").length - 1];
+        return `${userID}-${timeStamp}-${imageName}`;
+    }
+
     const pickImage = async () => {
         let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
         if (permissions?.granted) {
             let result = await ImagePicker.launchImageLibraryAsync();
-
-            if (!result.canceled) setImage(result.assets[0]);
-            else setImage(null);
+            if (!result.canceled) {
+            const imageURI = result.assets[0].uri;
+            const uniqueRefString = generateReference(imageURI);
+            const response = await fetch(imageURI);
+            const blob = await response.blob();
+            const newUploadRef = ref(storage, uniqueRefString);
+            uploadBytes(newUploadRef, blob).then(async (snapshot) => {
+                console.log('file has been uploaded');
+                const imageURL = await getDownloadURL(snapshot.ref)
+                onSend({ image: imageURL })
+                }).catch((error) => console.error('Error: ', error));
+            }
+            else Alert.alert("Permissions haven't been granted.");
         }
     }
 
@@ -63,16 +80,14 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend }) => {
             const location = await Location.getCurrentPositionAsync({});
             if (location) {
 
-                const message = {
-                    location: {
-                        longitude: location.coords.longitude,
-                        latitude: location.coords.latitude,
-                    },
-                }
-                onSend([message]);
-
-                // REMOVE WHEN DONE
-                console.log('ONE: Location message being sent: ', message);
+                onSend(
+                    {
+                        location: {
+                            longitude: location.coords.longitude,
+                            latitude: location.coords.latitude,
+                        },
+                    }
+                );
 
             } else Alert.alert('Error occurred while fetching location');
         } else Alert.alert('Permissions haven\'t been granted');
