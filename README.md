@@ -24,7 +24,7 @@ The Chat App is a mobile application built using React Native. This app provides
 
 ```
 git clone https://github.com/raschkatie/chat-app.git
-cd Chat
+cd chat-app
 ```
 
 - Install dependencies
