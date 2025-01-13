@@ -21,7 +21,7 @@ import { getStorage } from 'firebase/storage';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  // init Firebase db
+  // Firebase Credentials
   const firebaseConfig = {
     apiKey: "AIzaSyC0yiexjFMZYLe4zddNhoDYiOzKhwyTdYI",
     authDomain: "chat-app-b15c3.firebaseapp.com",

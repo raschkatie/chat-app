@@ -17,3 +17,48 @@ The Chat App is a mobile application built using React Native. This app provides
 - Firestore/Firebase
 - Gifted Chat
 - Async Storage
+
+## Setup
+
+- Clone the [repository](https://github.com/raschkatie/chat-app)
+
+```
+git clone https://github.com/raschkatie/chat-app.git
+cd Chat
+```
+
+- Install dependencies
+
+```
+npm install
+```
+
+- Install Expo CLI
+
+```
+npm install -g expo-cli
+```
+
+- Configure Firebase
+  - Go to Firebase Console
+  - Create a new project
+  - Add a web app
+  - In the Rules tab within Firebase, change `false` to `true` in line 5
+  - Copy and Paste your Firebase credentials in the App.js file in the `Firebase Credentials` section
+
+```
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+}
+```
+
+- Run the app locally
+
+```
+npx expo start
+```
