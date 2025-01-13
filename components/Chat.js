@@ -14,6 +14,7 @@ const Chat = ({ isConnected, route, navigation, db, storage }) => {
     const { name, background, userID } = route.params;
 
     const onSend = (newMessages) => {
+        console.log('message: ', newMessages);
         addDoc(collection(db, 'messages'), newMessages[0])
     }
 
@@ -105,6 +106,7 @@ const Chat = ({ isConnected, route, navigation, db, storage }) => {
             if (unsubMessages) unsubMessages();
             unsubMessages = null;
 
+            // find message history and list in descending order by timestamp
             const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
             unsubMessages = onSnapshot(q, (doc) => {
                 let newMessageList = [];
