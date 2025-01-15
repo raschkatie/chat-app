@@ -13,7 +13,6 @@ const Start = ({ navigation }) => {
 
     const auth = getAuth();
 
-    // init color selection array and bg image
     const colors = ['#090c08', '#474056', '#8a95a5', '#b9c6ae'];
     const backgroundImage = require('../assets/backgroundImage.png');
 

@@ -14,7 +14,6 @@ const Chat = ({ isConnected, route, navigation, db, storage }) => {
     const { name, background, userID } = route.params;
 
     const onSend = (newMessages) => {
-        console.log('message: ', newMessages);
         addDoc(collection(db, 'messages'), newMessages[0])
     }
 
@@ -96,21 +95,15 @@ const Chat = ({ isConnected, route, navigation, db, storage }) => {
     }
 
     let unsubMessages;
-
     useEffect(() => {
-
         navigation.setOptions({ title: name });
-
         if (isConnected === true) {
-
             if (unsubMessages) unsubMessages();
             unsubMessages = null;
-
             // find message history and list in descending order by timestamp
             const q = query(collection(db, 'messages'), orderBy('createdAt', 'desc'));
             unsubMessages = onSnapshot(q, (doc) => {
                 let newMessageList = [];
-
                 doc.forEach(message => {
                     let newMsg = {
                         id: message.id,
@@ -123,7 +116,6 @@ const Chat = ({ isConnected, route, navigation, db, storage }) => {
                 setMessages(newMessageList);
             });
         } else loadCachedMessages();
-
         // Clean up code / unmounting actions
         return () => {
             if (unsubMessages) unsubMessages();
