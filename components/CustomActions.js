@@ -49,9 +49,6 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
           const imageURL = await getDownloadURL(snapshot.ref)
           console.log('image: ', imageURL);
           onSend({ image: imageURL })
-          .catch((error) => {
-            console.log(error);
-          })
         });
       }
     
