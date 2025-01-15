@@ -44,6 +44,15 @@ npm install -g expo-cli
   - Create a new project
   - Add a web app
   - In the Rules tab within Firebase, change `false` to `true` in line 5
+  ```
+  service cloud.firestore {
+    match /databases/{database}/documents {
+      match /{document=**} {
+        allow read, write: if true;
+      }
+    }
+  }
+  ```
   - Copy and Paste your Firebase credentials in the App.js file in the `Firebase Credentials` section
 
 ```
