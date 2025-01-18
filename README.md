@@ -2,9 +2,7 @@
 
 The Chat App is a mobile application built using React Native. This app provides users with a chat interface and options to share images and their location.
 
-![Screenshot of the Chat messaging app on the main Start screen.](assets/chat-app-main-screen.PNG)
-
-![Screenshot of the Chat messaging app in the chat messaging screen, showing messages, images and locations sent back and forth.](assets/chat-app-chat-screen.PNG)
+![Screenshot of the Chat messaging app on the main Start screen.](assets/chat-app-main-screen.PNG) ![Screenshot of the Chat messaging app in the chat messaging screen, showing messages, images and locations sent back and forth.](assets/chat-app-chat-screen.PNG)
 
 ## Features
 
