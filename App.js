@@ -26,7 +26,7 @@ const App = () => {
     apiKey: "AIzaSyC0yiexjFMZYLe4zddNhoDYiOzKhwyTdYI",
     authDomain: "chat-app-b15c3.firebaseapp.com",
     projectId: "chat-app-b15c3",
-    storageBucket: "chat-app-b15c3.appspot.com",
+    storageBucket: "chat-app-b15c3.firebasestorage.app",
     messagingSenderId: "374517180533",
     appId: "1:374517180533:web:bc54ae3b3aba0dfd17703c"
   };
